@@ -41,29 +41,27 @@ $( document ).ready(function() {
       thisQuestion = triviaQuestions[i];
       questionsDiv.append("<p>" + thisQuestion.question + "</p> <form>");
       for ( j = 0; j < thisQuestion.answers.length; j++ ) {
-        questionsDiv.append("<input type='radio' class='radioButton' value=" + i + " name = " + i + " id= " + thisQuestion.answers[j] + "> ");
+        questionsDiv.append("<input type='radio' class='radioButton' value=" + i + " name = " + i + " id='" + thisQuestion.answers[j] + "'> ");
         questionsDiv.append(thisQuestion.answers[j]);
         questionsDiv.append("<br><br>");
       }
     }
-    $(".radioButton").on("click", function () {
-        console.log("clicked");
-        value = $("input[type='radio']:checked").val();
-        answer = $(this).attr("id");
-        correctAnswer = $(triviaQuestions[value].answerCorrect);
-        console.log(value);
-        console.log(answer);
-        console.log(triviaQuestions[value].answerCorrect);
-        if ( answer == correctAnswer ) {
-            numCorrect++;
-            console.log(numCorrect);
-        } else if ( answer!= correctAnswer ) {
-          numIncorrect++;
-          console.log(numIncorrect);
-        }
-    });
     $("#start").hide();
   }
+
+  $( document ).on('click', '.radioButton' ,function(){
+    let guess = $(this).attr("id");
+    let correctGuess = $(this).attr("value");
+    thisQuestion = triviaQuestions[correctGuess];
+    if ( thisQuestion.answerCorrect === guess ) {
+      numCorrect++
+    } else if (  thisQuestion.answerCorrect !== guess ) {
+      numIncorrect++
+    }
+    console.log(correctGuess);
+    console.log(guess);
+    console.log(thisQuestion.answerCorrect);
+  });
 
   function decrement () {
     if ( clockRunning === true ) {
@@ -79,4 +77,14 @@ $( document ).ready(function() {
       }
     }
   }
+
+  $( document ).on("click", "#retry", function() {
+    questionsDiv.empty();
+    time = 10;
+    timeLeft.html("<h2> Time Left: " + time + "</h2>");
+    currentQuestion = 0;
+    numCorrect = 0;
+    numIncorrect = 0;
+    start()
+  });
 });
